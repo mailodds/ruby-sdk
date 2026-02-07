@@ -1,5 +1,7 @@
 # MailOdds SDK for Ruby
 
+[![Gem Version](https://img.shields.io/gem/v/mailodds)](https://rubygems.org/gems/mailodds)
+
 Official Ruby client for the [MailOdds Email Validation API](https://mailodds.com/docs).
 
 ## Installation
