@@ -24,16 +24,16 @@ def check(label, expected, actual)
 end
 
 cases = [
-  ['test@deliverable.mailodds.com', 'valid', 'accept', nil],
-  ['test@invalid.mailodds.com', 'invalid', 'reject', 'smtp_rejected'],
-  ['test@risky.mailodds.com', 'catch_all', 'accept_with_caution', 'catch_all_detected'],
-  ['test@disposable.mailodds.com', 'do_not_mail', 'reject', 'disposable'],
-  ['test@role.mailodds.com', 'do_not_mail', 'reject', 'role_account'],
-  ['test@timeout.mailodds.com', 'unknown', 'retry_later', 'smtp_unreachable'],
-  ['test@freeprovider.mailodds.com', 'valid', 'accept', nil],
+  ['test@deliverable.mailodds.com', 'valid', 'accept', nil, false, false, false, true, 'enhanced'],
+  ['test@invalid.mailodds.com', 'invalid', 'reject', 'smtp_rejected', false, false, false, true, 'enhanced'],
+  ['test@risky.mailodds.com', 'catch_all', 'accept_with_caution', 'catch_all_detected', false, false, false, true, 'enhanced'],
+  ['test@disposable.mailodds.com', 'do_not_mail', 'reject', 'disposable', false, true, false, true, 'enhanced'],
+  ['test@role.mailodds.com', 'do_not_mail', 'reject', 'role_account', false, false, true, true, 'enhanced'],
+  ['test@timeout.mailodds.com', 'unknown', 'retry_later', 'smtp_unreachable', false, false, false, true, 'enhanced'],
+  ['test@freeprovider.mailodds.com', 'valid', 'accept', nil, true, false, false, true, 'enhanced'],
 ]
 
-cases.each do |email, exp_status, exp_action, exp_sub|
+cases.each do |email, exp_status, exp_action, exp_sub, exp_free, exp_disp, exp_role, exp_mx, exp_depth|
   domain = email.split('@')[1].split('.')[0]
   begin
     req = Mailodds::ValidateRequest.new(email: email)
@@ -41,6 +41,17 @@ cases.each do |email, exp_status, exp_action, exp_sub|
     check("#{domain}.status", exp_status, resp.status)
     check("#{domain}.action", exp_action, resp.action)
     check("#{domain}.sub_status", exp_sub, resp.sub_status)
+    check("#{domain}.free_provider", exp_free, resp.free_provider)
+    check("#{domain}.disposable", exp_disp, resp.disposable)
+    check("#{domain}.role_account", exp_role, resp.role_account)
+    check("#{domain}.mx_found", exp_mx, resp.mx_found)
+    check("#{domain}.depth", exp_depth, resp.depth)
+    if !resp.processed_at || resp.processed_at.to_s.empty?
+      $failed += 1
+      puts "  FAIL: #{domain}.processed_at is empty"
+    else
+      $passed += 1
+    end
   rescue => e
     $failed += 1
     puts "  FAIL: #{domain} #{e.class}: #{e.message}"
