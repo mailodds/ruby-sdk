@@ -14,14 +14,13 @@ require 'date'
 require 'time'
 
 module Mailodds
-  class ValidateRequest < ApiModelBase
-    # Email address to validate
-    attr_accessor :email
+  class ValidateBatchRequest < ApiModelBase
+    # List of emails to validate
+    attr_accessor :emails
 
-    # Validation depth. 'standard' skips SMTP verification.
     attr_accessor :depth
 
-    # Optional policy ID to use instead of default policy
+    # Optional policy ID
     attr_accessor :policy_id
 
     class EnumAttributeValidator
@@ -49,7 +48,7 @@ module Mailodds
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'email' => :'email',
+        :'emails' => :'emails',
         :'depth' => :'depth',
         :'policy_id' => :'policy_id'
       }
@@ -68,7 +67,7 @@ module Mailodds
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'email' => :'String',
+        :'emails' => :'Array<String>',
         :'depth' => :'String',
         :'policy_id' => :'Integer'
       }
@@ -84,22 +83,24 @@ module Mailodds
     # @param [Hash] attributes Model attributes in the form of hash
     def initialize(attributes = {})
       if (!attributes.is_a?(Hash))
-        fail ArgumentError, "The input argument (attributes) must be a hash in `Mailodds::ValidateRequest` initialize method"
+        fail ArgumentError, "The input argument (attributes) must be a hash in `Mailodds::ValidateBatchRequest` initialize method"
       end
 
       # check to see if the attribute exists and convert string to symbol for hash key
       acceptable_attribute_map = self.class.acceptable_attribute_map
       attributes = attributes.each_with_object({}) { |(k, v), h|
         if (!acceptable_attribute_map.key?(k.to_sym))
-          fail ArgumentError, "`#{k}` is not a valid attribute in `Mailodds::ValidateRequest`. Please check the name to make sure it's valid. List of attributes: " + acceptable_attribute_map.keys.inspect
+          fail ArgumentError, "`#{k}` is not a valid attribute in `Mailodds::ValidateBatchRequest`. Please check the name to make sure it's valid. List of attributes: " + acceptable_attribute_map.keys.inspect
         end
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'email')
-        self.email = attributes[:'email']
+      if attributes.key?(:'emails')
+        if (value = attributes[:'emails']).is_a?(Array)
+          self.emails = value
+        end
       else
-        self.email = nil
+        self.emails = nil
       end
 
       if attributes.key?(:'depth')
@@ -118,8 +119,12 @@ module Mailodds
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @email.nil?
-        invalid_properties.push('invalid value for "email", email cannot be nil.')
+      if @emails.nil?
+        invalid_properties.push('invalid value for "emails", emails cannot be nil.')
+      end
+
+      if @emails.length > 100
+        invalid_properties.push('invalid value for "emails", number of items must be less than or equal to 100.')
       end
 
       invalid_properties
@@ -129,20 +134,25 @@ module Mailodds
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @email.nil?
+      return false if @emails.nil?
+      return false if @emails.length > 100
       depth_validator = EnumAttributeValidator.new('String', ["standard", "enhanced"])
       return false unless depth_validator.valid?(@depth)
       true
     end
 
     # Custom attribute writer method with validation
-    # @param [Object] email Value to be assigned
-    def email=(email)
-      if email.nil?
-        fail ArgumentError, 'email cannot be nil'
+    # @param [Object] emails Value to be assigned
+    def emails=(emails)
+      if emails.nil?
+        fail ArgumentError, 'emails cannot be nil'
       end
 
-      @email = email
+      if emails.length > 100
+        fail ArgumentError, 'invalid value for "emails", number of items must be less than or equal to 100.'
+      end
+
+      @emails = emails
     end
 
     # Custom attribute writer method checking allowed values (enum).
@@ -160,7 +170,7 @@ module Mailodds
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          email == o.email &&
+          emails == o.emails &&
           depth == o.depth &&
           policy_id == o.policy_id
     end
@@ -174,7 +184,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [email, depth, policy_id].hash
+      [emails, depth, policy_id].hash
     end
 
     # Builds the object from hash

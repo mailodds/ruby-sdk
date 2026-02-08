@@ -14,12 +14,13 @@ require 'date'
 require 'time'
 
 module Mailodds
+  # Present only when email matched a suppression list entry.
   class ValidationResponseSuppressionMatch < ApiModelBase
-    attr_accessor :matched
-
     attr_accessor :match_type
 
     attr_accessor :match_value
+
+    attr_accessor :reason
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -46,9 +47,9 @@ module Mailodds
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'matched' => :'matched',
         :'match_type' => :'match_type',
-        :'match_value' => :'match_value'
+        :'match_value' => :'match_value',
+        :'reason' => :'reason'
       }
     end
 
@@ -65,9 +66,9 @@ module Mailodds
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'matched' => :'Boolean',
         :'match_type' => :'String',
-        :'match_value' => :'String'
+        :'match_value' => :'String',
+        :'reason' => :'String'
       }
     end
 
@@ -93,16 +94,16 @@ module Mailodds
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'matched')
-        self.matched = attributes[:'matched']
-      end
-
       if attributes.key?(:'match_type')
         self.match_type = attributes[:'match_type']
       end
 
       if attributes.key?(:'match_value')
         self.match_value = attributes[:'match_value']
+      end
+
+      if attributes.key?(:'reason')
+        self.reason = attributes[:'reason']
       end
     end
 
@@ -138,9 +139,9 @@ module Mailodds
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          matched == o.matched &&
           match_type == o.match_type &&
-          match_value == o.match_value
+          match_value == o.match_value &&
+          reason == o.reason
     end
 
     # @see the `==` method
@@ -152,7 +153,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [matched, match_type, match_value].hash
+      [match_type, match_value, reason].hash
     end
 
     # Builds the object from hash

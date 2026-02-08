@@ -4,9 +4,9 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **matched** | **Boolean** |  | [optional] |
 | **match_type** | **String** |  | [optional] |
 | **match_value** | **String** |  | [optional] |
+| **reason** | **String** |  | [optional] |
 
 ## Example
 
@@ -14,9 +14,9 @@
 require 'mailodds'
 
 instance = Mailodds::ValidationResponseSuppressionMatch.new(
-  matched: null,
   match_type: null,
-  match_value: null
+  match_value: null,
+  reason: null
 )
 ```
 

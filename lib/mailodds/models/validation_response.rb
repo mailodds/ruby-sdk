@@ -14,6 +14,7 @@ require 'date'
 require 'time'
 
 module Mailodds
+  # Flat validation response. Conditional fields are omitted (not null) when not applicable.
   class ValidationResponse < ApiModelBase
     attr_accessor :schema_version
 
@@ -22,25 +23,50 @@ module Mailodds
     # Validation status
     attr_accessor :status
 
-    # Detailed status reason
-    attr_accessor :sub_status
-
     # Recommended action
     attr_accessor :action
 
+    # Detailed status reason. Omitted when none.
+    attr_accessor :sub_status
+
     attr_accessor :domain
 
+    # Whether MX records were found for the domain
     attr_accessor :mx_found
 
+    # Primary MX hostname. Omitted when MX not resolved.
+    attr_accessor :mx_host
+
+    # Whether SMTP verification passed. Omitted when SMTP not checked.
     attr_accessor :smtp_check
 
+    # Whether domain is catch-all. Omitted when SMTP not checked.
+    attr_accessor :catch_all
+
+    # Whether domain is a known disposable email provider
     attr_accessor :disposable
 
+    # Whether address is a role account (e.g., info@, admin@)
     attr_accessor :role_account
 
+    # Whether domain is a known free email provider (e.g., gmail.com)
     attr_accessor :free_provider
 
+    # Validation depth used for this check
+    attr_accessor :depth
+
+    # ISO 8601 timestamp of validation
+    attr_accessor :processed_at
+
+    # Typo correction suggestion. Omitted when no typo detected.
+    attr_accessor :suggested_email
+
+    # Suggested retry delay in milliseconds. Present only for retry_later action.
+    attr_accessor :retry_after_ms
+
     attr_accessor :suppression_match
+
+    attr_accessor :policy_applied
 
     class EnumAttributeValidator
       attr_reader :datatype
@@ -70,15 +96,22 @@ module Mailodds
         :'schema_version' => :'schema_version',
         :'email' => :'email',
         :'status' => :'status',
-        :'sub_status' => :'sub_status',
         :'action' => :'action',
+        :'sub_status' => :'sub_status',
         :'domain' => :'domain',
         :'mx_found' => :'mx_found',
+        :'mx_host' => :'mx_host',
         :'smtp_check' => :'smtp_check',
+        :'catch_all' => :'catch_all',
         :'disposable' => :'disposable',
         :'role_account' => :'role_account',
         :'free_provider' => :'free_provider',
-        :'suppression_match' => :'suppression_match'
+        :'depth' => :'depth',
+        :'processed_at' => :'processed_at',
+        :'suggested_email' => :'suggested_email',
+        :'retry_after_ms' => :'retry_after_ms',
+        :'suppression_match' => :'suppression_match',
+        :'policy_applied' => :'policy_applied'
       }
     end
 
@@ -98,15 +131,22 @@ module Mailodds
         :'schema_version' => :'String',
         :'email' => :'String',
         :'status' => :'String',
-        :'sub_status' => :'String',
         :'action' => :'String',
+        :'sub_status' => :'String',
         :'domain' => :'String',
         :'mx_found' => :'Boolean',
+        :'mx_host' => :'String',
         :'smtp_check' => :'Boolean',
+        :'catch_all' => :'Boolean',
         :'disposable' => :'Boolean',
         :'role_account' => :'Boolean',
         :'free_provider' => :'Boolean',
-        :'suppression_match' => :'ValidationResponseSuppressionMatch'
+        :'depth' => :'String',
+        :'processed_at' => :'Time',
+        :'suggested_email' => :'String',
+        :'retry_after_ms' => :'Integer',
+        :'suppression_match' => :'ValidationResponseSuppressionMatch',
+        :'policy_applied' => :'ValidationResponsePolicyApplied'
       }
     end
 
@@ -134,6 +174,8 @@ module Mailodds
 
       if attributes.key?(:'schema_version')
         self.schema_version = attributes[:'schema_version']
+      else
+        self.schema_version = nil
       end
 
       if attributes.key?(:'email')
@@ -148,42 +190,84 @@ module Mailodds
         self.status = nil
       end
 
-      if attributes.key?(:'sub_status')
-        self.sub_status = attributes[:'sub_status']
-      end
-
       if attributes.key?(:'action')
         self.action = attributes[:'action']
       else
         self.action = nil
       end
 
+      if attributes.key?(:'sub_status')
+        self.sub_status = attributes[:'sub_status']
+      end
+
       if attributes.key?(:'domain')
         self.domain = attributes[:'domain']
+      else
+        self.domain = nil
       end
 
       if attributes.key?(:'mx_found')
         self.mx_found = attributes[:'mx_found']
+      else
+        self.mx_found = nil
+      end
+
+      if attributes.key?(:'mx_host')
+        self.mx_host = attributes[:'mx_host']
       end
 
       if attributes.key?(:'smtp_check')
         self.smtp_check = attributes[:'smtp_check']
       end
 
+      if attributes.key?(:'catch_all')
+        self.catch_all = attributes[:'catch_all']
+      end
+
       if attributes.key?(:'disposable')
         self.disposable = attributes[:'disposable']
+      else
+        self.disposable = nil
       end
 
       if attributes.key?(:'role_account')
         self.role_account = attributes[:'role_account']
+      else
+        self.role_account = nil
       end
 
       if attributes.key?(:'free_provider')
         self.free_provider = attributes[:'free_provider']
+      else
+        self.free_provider = nil
+      end
+
+      if attributes.key?(:'depth')
+        self.depth = attributes[:'depth']
+      else
+        self.depth = nil
+      end
+
+      if attributes.key?(:'processed_at')
+        self.processed_at = attributes[:'processed_at']
+      else
+        self.processed_at = nil
+      end
+
+      if attributes.key?(:'suggested_email')
+        self.suggested_email = attributes[:'suggested_email']
+      end
+
+      if attributes.key?(:'retry_after_ms')
+        self.retry_after_ms = attributes[:'retry_after_ms']
       end
 
       if attributes.key?(:'suppression_match')
         self.suppression_match = attributes[:'suppression_match']
+      end
+
+      if attributes.key?(:'policy_applied')
+        self.policy_applied = attributes[:'policy_applied']
       end
     end
 
@@ -192,6 +276,10 @@ module Mailodds
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
+      if @schema_version.nil?
+        invalid_properties.push('invalid value for "schema_version", schema_version cannot be nil.')
+      end
+
       if @email.nil?
         invalid_properties.push('invalid value for "email", email cannot be nil.')
       end
@@ -204,6 +292,34 @@ module Mailodds
         invalid_properties.push('invalid value for "action", action cannot be nil.')
       end
 
+      if @domain.nil?
+        invalid_properties.push('invalid value for "domain", domain cannot be nil.')
+      end
+
+      if @mx_found.nil?
+        invalid_properties.push('invalid value for "mx_found", mx_found cannot be nil.')
+      end
+
+      if @disposable.nil?
+        invalid_properties.push('invalid value for "disposable", disposable cannot be nil.')
+      end
+
+      if @role_account.nil?
+        invalid_properties.push('invalid value for "role_account", role_account cannot be nil.')
+      end
+
+      if @free_provider.nil?
+        invalid_properties.push('invalid value for "free_provider", free_provider cannot be nil.')
+      end
+
+      if @depth.nil?
+        invalid_properties.push('invalid value for "depth", depth cannot be nil.')
+      end
+
+      if @processed_at.nil?
+        invalid_properties.push('invalid value for "processed_at", processed_at cannot be nil.')
+      end
+
       invalid_properties
     end
 
@@ -211,6 +327,7 @@ module Mailodds
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
+      return false if @schema_version.nil?
       return false if @email.nil?
       return false if @status.nil?
       status_validator = EnumAttributeValidator.new('String', ["valid", "invalid", "catch_all", "do_not_mail", "unknown"])
@@ -218,7 +335,28 @@ module Mailodds
       return false if @action.nil?
       action_validator = EnumAttributeValidator.new('String', ["accept", "accept_with_caution", "reject", "retry_later"])
       return false unless action_validator.valid?(@action)
+      sub_status_validator = EnumAttributeValidator.new('String', ["format_invalid", "mx_missing", "mx_timeout", "smtp_unreachable", "smtp_rejected", "disposable", "role_account", "greylisted", "catch_all_detected", "suppression_match"])
+      return false unless sub_status_validator.valid?(@sub_status)
+      return false if @domain.nil?
+      return false if @mx_found.nil?
+      return false if @disposable.nil?
+      return false if @role_account.nil?
+      return false if @free_provider.nil?
+      return false if @depth.nil?
+      depth_validator = EnumAttributeValidator.new('String', ["standard", "enhanced"])
+      return false unless depth_validator.valid?(@depth)
+      return false if @processed_at.nil?
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] schema_version Value to be assigned
+    def schema_version=(schema_version)
+      if schema_version.nil?
+        fail ArgumentError, 'schema_version cannot be nil'
+      end
+
+      @schema_version = schema_version
     end
 
     # Custom attribute writer method with validation
@@ -251,6 +389,86 @@ module Mailodds
       @action = action
     end
 
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] sub_status Object to be assigned
+    def sub_status=(sub_status)
+      validator = EnumAttributeValidator.new('String', ["format_invalid", "mx_missing", "mx_timeout", "smtp_unreachable", "smtp_rejected", "disposable", "role_account", "greylisted", "catch_all_detected", "suppression_match"])
+      unless validator.valid?(sub_status)
+        fail ArgumentError, "invalid value for \"sub_status\", must be one of #{validator.allowable_values}."
+      end
+      @sub_status = sub_status
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] domain Value to be assigned
+    def domain=(domain)
+      if domain.nil?
+        fail ArgumentError, 'domain cannot be nil'
+      end
+
+      @domain = domain
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] mx_found Value to be assigned
+    def mx_found=(mx_found)
+      if mx_found.nil?
+        fail ArgumentError, 'mx_found cannot be nil'
+      end
+
+      @mx_found = mx_found
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] disposable Value to be assigned
+    def disposable=(disposable)
+      if disposable.nil?
+        fail ArgumentError, 'disposable cannot be nil'
+      end
+
+      @disposable = disposable
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] role_account Value to be assigned
+    def role_account=(role_account)
+      if role_account.nil?
+        fail ArgumentError, 'role_account cannot be nil'
+      end
+
+      @role_account = role_account
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] free_provider Value to be assigned
+    def free_provider=(free_provider)
+      if free_provider.nil?
+        fail ArgumentError, 'free_provider cannot be nil'
+      end
+
+      @free_provider = free_provider
+    end
+
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] depth Object to be assigned
+    def depth=(depth)
+      validator = EnumAttributeValidator.new('String', ["standard", "enhanced"])
+      unless validator.valid?(depth)
+        fail ArgumentError, "invalid value for \"depth\", must be one of #{validator.allowable_values}."
+      end
+      @depth = depth
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] processed_at Value to be assigned
+    def processed_at=(processed_at)
+      if processed_at.nil?
+        fail ArgumentError, 'processed_at cannot be nil'
+      end
+
+      @processed_at = processed_at
+    end
+
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
@@ -259,15 +477,22 @@ module Mailodds
           schema_version == o.schema_version &&
           email == o.email &&
           status == o.status &&
-          sub_status == o.sub_status &&
           action == o.action &&
+          sub_status == o.sub_status &&
           domain == o.domain &&
           mx_found == o.mx_found &&
+          mx_host == o.mx_host &&
           smtp_check == o.smtp_check &&
+          catch_all == o.catch_all &&
           disposable == o.disposable &&
           role_account == o.role_account &&
           free_provider == o.free_provider &&
-          suppression_match == o.suppression_match
+          depth == o.depth &&
+          processed_at == o.processed_at &&
+          suggested_email == o.suggested_email &&
+          retry_after_ms == o.retry_after_ms &&
+          suppression_match == o.suppression_match &&
+          policy_applied == o.policy_applied
     end
 
     # @see the `==` method
@@ -279,7 +504,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, email, status, sub_status, action, domain, mx_found, smtp_check, disposable, role_account, free_provider, suppression_match].hash
+      [schema_version, email, status, action, sub_status, domain, mx_found, mx_host, smtp_check, catch_all, disposable, role_account, free_provider, depth, processed_at, suggested_email, retry_after_ms, suppression_match, policy_applied].hash
     end
 
     # Builds the object from hash

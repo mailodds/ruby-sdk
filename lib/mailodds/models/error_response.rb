@@ -85,8 +85,6 @@ module Mailodds
 
       if attributes.key?(:'message')
         self.message = attributes[:'message']
-      else
-        self.message = nil
       end
     end
 
@@ -99,10 +97,6 @@ module Mailodds
         invalid_properties.push('invalid value for "error", error cannot be nil.')
       end
 
-      if @message.nil?
-        invalid_properties.push('invalid value for "message", message cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -111,7 +105,6 @@ module Mailodds
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
       return false if @error.nil?
-      return false if @message.nil?
       true
     end
 
@@ -123,16 +116,6 @@ module Mailodds
       end
 
       @error = error
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] message Value to be assigned
-    def message=(message)
-      if message.nil?
-        fail ArgumentError, 'message cannot be nil'
-      end
-
-      @message = message
     end
 
     # Checks equality by comparing each attribute.

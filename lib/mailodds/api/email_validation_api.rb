@@ -19,6 +19,74 @@ module Mailodds
     def initialize(api_client = ApiClient.default)
       @api_client = api_client
     end
+    # Validate multiple emails (sync)
+    # Validate up to 100 email addresses synchronously. For larger lists, use the bulk jobs API.
+    # @param validate_batch_request [ValidateBatchRequest] 
+    # @param [Hash] opts the optional parameters
+    # @return [ValidateBatch200Response]
+    def validate_batch(validate_batch_request, opts = {})
+      data, _status_code, _headers = validate_batch_with_http_info(validate_batch_request, opts)
+      data
+    end
+
+    # Validate multiple emails (sync)
+    # Validate up to 100 email addresses synchronously. For larger lists, use the bulk jobs API.
+    # @param validate_batch_request [ValidateBatchRequest] 
+    # @param [Hash] opts the optional parameters
+    # @return [Array<(ValidateBatch200Response, Integer, Hash)>] ValidateBatch200Response data, response status code and response headers
+    def validate_batch_with_http_info(validate_batch_request, opts = {})
+      if @api_client.config.debugging
+        @api_client.config.logger.debug 'Calling API: EmailValidationApi.validate_batch ...'
+      end
+      # verify the required parameter 'validate_batch_request' is set
+      if @api_client.config.client_side_validation && validate_batch_request.nil?
+        fail ArgumentError, "Missing the required parameter 'validate_batch_request' when calling EmailValidationApi.validate_batch"
+      end
+      # resource path
+      local_var_path = '/v1/validate/batch'
+
+      # query parameters
+      query_params = opts[:query_params] || {}
+
+      # header parameters
+      header_params = opts[:header_params] || {}
+      # HTTP header 'Accept' (if needed)
+      header_params['Accept'] = @api_client.select_header_accept(['application/json']) unless header_params['Accept']
+      # HTTP header 'Content-Type'
+      content_type = @api_client.select_header_content_type(['application/json'])
+      if !content_type.nil?
+          header_params['Content-Type'] = content_type
+      end
+
+      # form parameters
+      form_params = opts[:form_params] || {}
+
+      # http body (model)
+      post_body = opts[:debug_body] || @api_client.object_to_http_body(validate_batch_request)
+
+      # return_type
+      return_type = opts[:debug_return_type] || 'ValidateBatch200Response'
+
+      # auth_names
+      auth_names = opts[:debug_auth_names] || ['BearerAuth']
+
+      new_options = opts.merge(
+        :operation => :"EmailValidationApi.validate_batch",
+        :header_params => header_params,
+        :query_params => query_params,
+        :form_params => form_params,
+        :body => post_body,
+        :auth_names => auth_names,
+        :return_type => return_type
+      )
+
+      data, status_code, headers = @api_client.call_api(:POST, local_var_path, new_options)
+      if @api_client.config.debugging
+        @api_client.config.logger.debug "API called: EmailValidationApi#validate_batch\nData: #{data.inspect}\nStatus code: #{status_code}\nHeaders: #{headers}"
+      end
+      return data, status_code, headers
+    end
+
     # Validate single email
     # Validate a single email address. Returns detailed validation results including status, sub-status, and recommended action.
     # @param validate_request [ValidateRequest] 

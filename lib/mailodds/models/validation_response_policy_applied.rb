@@ -14,44 +14,23 @@ require 'date'
 require 'time'
 
 module Mailodds
-  class ValidateRequest < ApiModelBase
-    # Email address to validate
-    attr_accessor :email
-
-    # Validation depth. 'standard' skips SMTP verification.
-    attr_accessor :depth
-
-    # Optional policy ID to use instead of default policy
+  # Present when a validation policy modified the result.
+  class ValidationResponsePolicyApplied < ApiModelBase
     attr_accessor :policy_id
 
-    class EnumAttributeValidator
-      attr_reader :datatype
-      attr_reader :allowable_values
+    attr_accessor :policy_name
 
-      def initialize(datatype, allowable_values)
-        @allowable_values = allowable_values.map do |value|
-          case datatype.to_s
-          when /Integer/i
-            value.to_i
-          when /Float/i
-            value.to_f
-          else
-            value
-          end
-        end
-      end
+    attr_accessor :rule_id
 
-      def valid?(value)
-        !value || allowable_values.include?(value)
-      end
-    end
+    attr_accessor :rule_type
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
-        :'email' => :'email',
-        :'depth' => :'depth',
-        :'policy_id' => :'policy_id'
+        :'policy_id' => :'policy_id',
+        :'policy_name' => :'policy_name',
+        :'rule_id' => :'rule_id',
+        :'rule_type' => :'rule_type'
       }
     end
 
@@ -68,9 +47,10 @@ module Mailodds
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'email' => :'String',
-        :'depth' => :'String',
-        :'policy_id' => :'Integer'
+        :'policy_id' => :'Integer',
+        :'policy_name' => :'String',
+        :'rule_id' => :'Integer',
+        :'rule_type' => :'String'
       }
     end
 
@@ -84,32 +64,32 @@ module Mailodds
     # @param [Hash] attributes Model attributes in the form of hash
     def initialize(attributes = {})
       if (!attributes.is_a?(Hash))
-        fail ArgumentError, "The input argument (attributes) must be a hash in `Mailodds::ValidateRequest` initialize method"
+        fail ArgumentError, "The input argument (attributes) must be a hash in `Mailodds::ValidationResponsePolicyApplied` initialize method"
       end
 
       # check to see if the attribute exists and convert string to symbol for hash key
       acceptable_attribute_map = self.class.acceptable_attribute_map
       attributes = attributes.each_with_object({}) { |(k, v), h|
         if (!acceptable_attribute_map.key?(k.to_sym))
-          fail ArgumentError, "`#{k}` is not a valid attribute in `Mailodds::ValidateRequest`. Please check the name to make sure it's valid. List of attributes: " + acceptable_attribute_map.keys.inspect
+          fail ArgumentError, "`#{k}` is not a valid attribute in `Mailodds::ValidationResponsePolicyApplied`. Please check the name to make sure it's valid. List of attributes: " + acceptable_attribute_map.keys.inspect
         end
         h[k.to_sym] = v
       }
 
-      if attributes.key?(:'email')
-        self.email = attributes[:'email']
-      else
-        self.email = nil
-      end
-
-      if attributes.key?(:'depth')
-        self.depth = attributes[:'depth']
-      else
-        self.depth = 'enhanced'
-      end
-
       if attributes.key?(:'policy_id')
         self.policy_id = attributes[:'policy_id']
+      end
+
+      if attributes.key?(:'policy_name')
+        self.policy_name = attributes[:'policy_name']
+      end
+
+      if attributes.key?(:'rule_id')
+        self.rule_id = attributes[:'rule_id']
+      end
+
+      if attributes.key?(:'rule_type')
+        self.rule_type = attributes[:'rule_type']
       end
     end
 
@@ -118,10 +98,6 @@ module Mailodds
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
-      if @email.nil?
-        invalid_properties.push('invalid value for "email", email cannot be nil.')
-      end
-
       invalid_properties
     end
 
@@ -129,30 +105,7 @@ module Mailodds
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      return false if @email.nil?
-      depth_validator = EnumAttributeValidator.new('String', ["standard", "enhanced"])
-      return false unless depth_validator.valid?(@depth)
       true
-    end
-
-    # Custom attribute writer method with validation
-    # @param [Object] email Value to be assigned
-    def email=(email)
-      if email.nil?
-        fail ArgumentError, 'email cannot be nil'
-      end
-
-      @email = email
-    end
-
-    # Custom attribute writer method checking allowed values (enum).
-    # @param [Object] depth Object to be assigned
-    def depth=(depth)
-      validator = EnumAttributeValidator.new('String', ["standard", "enhanced"])
-      unless validator.valid?(depth)
-        fail ArgumentError, "invalid value for \"depth\", must be one of #{validator.allowable_values}."
-      end
-      @depth = depth
     end
 
     # Checks equality by comparing each attribute.
@@ -160,9 +113,10 @@ module Mailodds
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
-          email == o.email &&
-          depth == o.depth &&
-          policy_id == o.policy_id
+          policy_id == o.policy_id &&
+          policy_name == o.policy_name &&
+          rule_id == o.rule_id &&
+          rule_type == o.rule_type
     end
 
     # @see the `==` method
@@ -174,7 +128,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [email, depth, policy_id].hash
+      [policy_id, policy_name, rule_id, rule_type].hash
     end
 
     # Builds the object from hash
