@@ -5,6 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **schema_version** | **String** |  | [optional] |
+| **request_id** | **String** | Unique request identifier | [optional] |
 | **error** | **String** | Machine-readable error code |  |
 | **message** | **String** | Human-readable error message | [optional] |
 
@@ -15,6 +16,7 @@ require 'mailodds'
 
 instance = Mailodds::ErrorResponse.new(
   schema_version: 1.0,
+  request_id: null,
   error: null,
   message: null
 )

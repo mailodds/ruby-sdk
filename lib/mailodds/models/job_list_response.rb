@@ -17,6 +17,9 @@ module Mailodds
   class JobListResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     attr_accessor :jobs
 
     attr_accessor :pagination
@@ -25,6 +28,7 @@ module Mailodds
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'jobs' => :'jobs',
         :'pagination' => :'pagination'
       }
@@ -44,6 +48,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'jobs' => :'Array<Job>',
         :'pagination' => :'Pagination'
       }
@@ -73,6 +78,10 @@ module Mailodds
 
       if attributes.key?(:'schema_version')
         self.schema_version = attributes[:'schema_version']
+      end
+
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
       end
 
       if attributes.key?(:'jobs')
@@ -107,6 +116,7 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           jobs == o.jobs &&
           pagination == o.pagination
     end
@@ -120,7 +130,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, jobs, pagination].hash
+      [schema_version, request_id, jobs, pagination].hash
     end
 
     # Builds the object from hash

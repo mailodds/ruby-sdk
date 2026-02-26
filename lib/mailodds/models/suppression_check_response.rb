@@ -17,6 +17,9 @@ module Mailodds
   class SuppressionCheckResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     attr_accessor :email
 
     attr_accessor :suppressed
@@ -51,6 +54,7 @@ module Mailodds
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'email' => :'email',
         :'suppressed' => :'suppressed',
         :'match_type' => :'match_type',
@@ -72,6 +76,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'email' => :'String',
         :'suppressed' => :'Boolean',
         :'match_type' => :'String',
@@ -103,6 +108,10 @@ module Mailodds
 
       if attributes.key?(:'schema_version')
         self.schema_version = attributes[:'schema_version']
+      end
+
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
       end
 
       if attributes.key?(:'email')
@@ -155,6 +164,7 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           email == o.email &&
           suppressed == o.suppressed &&
           match_type == o.match_type &&
@@ -170,7 +180,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, email, suppressed, match_type, match_value].hash
+      [schema_version, request_id, email, suppressed, match_type, match_value].hash
     end
 
     # Builds the object from hash

@@ -17,6 +17,9 @@ module Mailodds
   class PolicyTestResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     # Original validation result before policy
     attr_accessor :original
 
@@ -32,6 +35,7 @@ module Mailodds
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'original' => :'original',
         :'modified' => :'modified',
         :'matched_rule' => :'matched_rule',
@@ -53,6 +57,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'original' => :'Object',
         :'modified' => :'Object',
         :'matched_rule' => :'Object',
@@ -85,6 +90,10 @@ module Mailodds
 
       if attributes.key?(:'schema_version')
         self.schema_version = attributes[:'schema_version']
+      end
+
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
       end
 
       if attributes.key?(:'original')
@@ -125,6 +134,7 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           original == o.original &&
           modified == o.modified &&
           matched_rule == o.matched_rule &&
@@ -140,7 +150,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, original, modified, matched_rule, rules_evaluated].hash
+      [schema_version, request_id, original, modified, matched_rule, rules_evaluated].hash
     end
 
     # Builds the object from hash

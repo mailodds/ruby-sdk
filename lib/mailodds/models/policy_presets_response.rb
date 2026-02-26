@@ -17,12 +17,16 @@ module Mailodds
   class PolicyPresetsResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     attr_accessor :presets
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'presets' => :'presets'
       }
     end
@@ -41,6 +45,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'presets' => :'Array<PolicyPresetsResponsePresetsInner>'
       }
     end
@@ -71,6 +76,10 @@ module Mailodds
         self.schema_version = attributes[:'schema_version']
       end
 
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
+      end
+
       if attributes.key?(:'presets')
         if (value = attributes[:'presets']).is_a?(Array)
           self.presets = value
@@ -99,6 +108,7 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           presets == o.presets
     end
 
@@ -111,7 +121,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, presets].hash
+      [schema_version, request_id, presets].hash
     end
 
     # Builds the object from hash

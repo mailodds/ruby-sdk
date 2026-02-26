@@ -18,6 +18,9 @@ module Mailodds
   class ValidationResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     attr_accessor :email
 
     # Validation status
@@ -64,6 +67,18 @@ module Mailodds
     # Suggested retry delay in milliseconds. Present only for retry_later action.
     attr_accessor :retry_after_ms
 
+    # Whether the domain has an SPF record. Omitted for standard depth.
+    attr_accessor :has_spf
+
+    # Whether the domain has a DMARC record. Omitted for standard depth.
+    attr_accessor :has_dmarc
+
+    # The domain's DMARC policy. Omitted when no DMARC record found.
+    attr_accessor :dmarc_policy
+
+    # Whether the domain's MX IP is on a DNS blocklist (Spamhaus ZEN). Omitted for standard depth.
+    attr_accessor :dnsbl_listed
+
     attr_accessor :suppression_match
 
     attr_accessor :policy_applied
@@ -94,6 +109,7 @@ module Mailodds
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'email' => :'email',
         :'status' => :'status',
         :'action' => :'action',
@@ -110,6 +126,10 @@ module Mailodds
         :'processed_at' => :'processed_at',
         :'suggested_email' => :'suggested_email',
         :'retry_after_ms' => :'retry_after_ms',
+        :'has_spf' => :'has_spf',
+        :'has_dmarc' => :'has_dmarc',
+        :'dmarc_policy' => :'dmarc_policy',
+        :'dnsbl_listed' => :'dnsbl_listed',
         :'suppression_match' => :'suppression_match',
         :'policy_applied' => :'policy_applied'
       }
@@ -129,6 +149,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'email' => :'String',
         :'status' => :'String',
         :'action' => :'String',
@@ -145,6 +166,10 @@ module Mailodds
         :'processed_at' => :'Time',
         :'suggested_email' => :'String',
         :'retry_after_ms' => :'Integer',
+        :'has_spf' => :'Boolean',
+        :'has_dmarc' => :'Boolean',
+        :'dmarc_policy' => :'String',
+        :'dnsbl_listed' => :'Boolean',
         :'suppression_match' => :'ValidationResponseSuppressionMatch',
         :'policy_applied' => :'ValidationResponsePolicyApplied'
       }
@@ -176,6 +201,10 @@ module Mailodds
         self.schema_version = attributes[:'schema_version']
       else
         self.schema_version = nil
+      end
+
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
       end
 
       if attributes.key?(:'email')
@@ -262,6 +291,22 @@ module Mailodds
         self.retry_after_ms = attributes[:'retry_after_ms']
       end
 
+      if attributes.key?(:'has_spf')
+        self.has_spf = attributes[:'has_spf']
+      end
+
+      if attributes.key?(:'has_dmarc')
+        self.has_dmarc = attributes[:'has_dmarc']
+      end
+
+      if attributes.key?(:'dmarc_policy')
+        self.dmarc_policy = attributes[:'dmarc_policy']
+      end
+
+      if attributes.key?(:'dnsbl_listed')
+        self.dnsbl_listed = attributes[:'dnsbl_listed']
+      end
+
       if attributes.key?(:'suppression_match')
         self.suppression_match = attributes[:'suppression_match']
       end
@@ -335,7 +380,7 @@ module Mailodds
       return false if @action.nil?
       action_validator = EnumAttributeValidator.new('String', ["accept", "accept_with_caution", "reject", "retry_later"])
       return false unless action_validator.valid?(@action)
-      sub_status_validator = EnumAttributeValidator.new('String', ["format_invalid", "mx_missing", "mx_timeout", "smtp_unreachable", "smtp_rejected", "disposable", "role_account", "greylisted", "catch_all_detected", "suppression_match"])
+      sub_status_validator = EnumAttributeValidator.new('String', ["format_invalid", "mx_missing", "mx_timeout", "smtp_unreachable", "smtp_rejected", "disposable", "role_account", "greylisted", "catch_all_detected", "domain_not_found", "suppression_match", "restricted_military", "restricted_sanctioned"])
       return false unless sub_status_validator.valid?(@sub_status)
       return false if @domain.nil?
       return false if @mx_found.nil?
@@ -346,6 +391,8 @@ module Mailodds
       depth_validator = EnumAttributeValidator.new('String', ["standard", "enhanced"])
       return false unless depth_validator.valid?(@depth)
       return false if @processed_at.nil?
+      dmarc_policy_validator = EnumAttributeValidator.new('String', ["none", "quarantine", "reject"])
+      return false unless dmarc_policy_validator.valid?(@dmarc_policy)
       true
     end
 
@@ -392,7 +439,7 @@ module Mailodds
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] sub_status Object to be assigned
     def sub_status=(sub_status)
-      validator = EnumAttributeValidator.new('String', ["format_invalid", "mx_missing", "mx_timeout", "smtp_unreachable", "smtp_rejected", "disposable", "role_account", "greylisted", "catch_all_detected", "suppression_match"])
+      validator = EnumAttributeValidator.new('String', ["format_invalid", "mx_missing", "mx_timeout", "smtp_unreachable", "smtp_rejected", "disposable", "role_account", "greylisted", "catch_all_detected", "domain_not_found", "suppression_match", "restricted_military", "restricted_sanctioned"])
       unless validator.valid?(sub_status)
         fail ArgumentError, "invalid value for \"sub_status\", must be one of #{validator.allowable_values}."
       end
@@ -469,12 +516,23 @@ module Mailodds
       @processed_at = processed_at
     end
 
+    # Custom attribute writer method checking allowed values (enum).
+    # @param [Object] dmarc_policy Object to be assigned
+    def dmarc_policy=(dmarc_policy)
+      validator = EnumAttributeValidator.new('String', ["none", "quarantine", "reject"])
+      unless validator.valid?(dmarc_policy)
+        fail ArgumentError, "invalid value for \"dmarc_policy\", must be one of #{validator.allowable_values}."
+      end
+      @dmarc_policy = dmarc_policy
+    end
+
     # Checks equality by comparing each attribute.
     # @param [Object] Object to be compared
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           email == o.email &&
           status == o.status &&
           action == o.action &&
@@ -491,6 +549,10 @@ module Mailodds
           processed_at == o.processed_at &&
           suggested_email == o.suggested_email &&
           retry_after_ms == o.retry_after_ms &&
+          has_spf == o.has_spf &&
+          has_dmarc == o.has_dmarc &&
+          dmarc_policy == o.dmarc_policy &&
+          dnsbl_listed == o.dnsbl_listed &&
           suppression_match == o.suppression_match &&
           policy_applied == o.policy_applied
     end
@@ -504,7 +566,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, email, status, action, sub_status, domain, mx_found, mx_host, smtp_check, catch_all, disposable, role_account, free_provider, depth, processed_at, suggested_email, retry_after_ms, suppression_match, policy_applied].hash
+      [schema_version, request_id, email, status, action, sub_status, domain, mx_found, mx_host, smtp_check, catch_all, disposable, role_account, free_provider, depth, processed_at, suggested_email, retry_after_ms, has_spf, has_dmarc, dmarc_policy, dnsbl_listed, suppression_match, policy_applied].hash
     end
 
     # Builds the object from hash

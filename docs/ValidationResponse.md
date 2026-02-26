@@ -5,6 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **schema_version** | **String** |  |  |
+| **request_id** | **String** | Unique request identifier | [optional] |
 | **email** | **String** |  |  |
 | **status** | **String** | Validation status |  |
 | **action** | **String** | Recommended action |  |
@@ -21,6 +22,10 @@
 | **processed_at** | **Time** | ISO 8601 timestamp of validation |  |
 | **suggested_email** | **String** | Typo correction suggestion. Omitted when no typo detected. | [optional] |
 | **retry_after_ms** | **Integer** | Suggested retry delay in milliseconds. Present only for retry_later action. | [optional] |
+| **has_spf** | **Boolean** | Whether the domain has an SPF record. Omitted for standard depth. | [optional] |
+| **has_dmarc** | **Boolean** | Whether the domain has a DMARC record. Omitted for standard depth. | [optional] |
+| **dmarc_policy** | **String** | The domain&#39;s DMARC policy. Omitted when no DMARC record found. | [optional] |
+| **dnsbl_listed** | **Boolean** | Whether the domain&#39;s MX IP is on a DNS blocklist (Spamhaus ZEN). Omitted for standard depth. | [optional] |
 | **suppression_match** | [**ValidationResponseSuppressionMatch**](ValidationResponseSuppressionMatch.md) |  | [optional] |
 | **policy_applied** | [**ValidationResponsePolicyApplied**](ValidationResponsePolicyApplied.md) |  | [optional] |
 
@@ -31,6 +36,7 @@ require 'mailodds'
 
 instance = Mailodds::ValidationResponse.new(
   schema_version: 1.0,
+  request_id: null,
   email: null,
   status: null,
   action: null,
@@ -47,6 +53,10 @@ instance = Mailodds::ValidationResponse.new(
   processed_at: null,
   suggested_email: null,
   retry_after_ms: null,
+  has_spf: null,
+  has_dmarc: null,
+  dmarc_policy: null,
+  dnsbl_listed: null,
   suppression_match: null,
   policy_applied: null
 )

@@ -11,5 +11,5 @@ Generator version: 7.19.0
 =end
 
 module Mailodds
-  VERSION = '1.1.0'
+  VERSION = '1.0.0'
 end

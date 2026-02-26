@@ -19,6 +19,8 @@ module Mailodds
 
     attr_accessor :invalid
 
+    attr_accessor :catch_all
+
     attr_accessor :do_not_mail
 
     attr_accessor :unknown
@@ -30,6 +32,7 @@ module Mailodds
       {
         :'valid' => :'valid',
         :'invalid' => :'invalid',
+        :'catch_all' => :'catch_all',
         :'do_not_mail' => :'do_not_mail',
         :'unknown' => :'unknown',
         :'cancelled_pending' => :'cancelled_pending'
@@ -51,6 +54,7 @@ module Mailodds
       {
         :'valid' => :'Integer',
         :'invalid' => :'Integer',
+        :'catch_all' => :'Integer',
         :'do_not_mail' => :'Integer',
         :'unknown' => :'Integer',
         :'cancelled_pending' => :'Integer'
@@ -85,6 +89,10 @@ module Mailodds
 
       if attributes.key?(:'invalid')
         self.invalid = attributes[:'invalid']
+      end
+
+      if attributes.key?(:'catch_all')
+        self.catch_all = attributes[:'catch_all']
       end
 
       if attributes.key?(:'do_not_mail')
@@ -122,6 +130,7 @@ module Mailodds
       self.class == o.class &&
           valid == o.valid &&
           invalid == o.invalid &&
+          catch_all == o.catch_all &&
           do_not_mail == o.do_not_mail &&
           unknown == o.unknown &&
           cancelled_pending == o.cancelled_pending
@@ -136,7 +145,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [valid, invalid, do_not_mail, unknown, cancelled_pending].hash
+      [valid, invalid, catch_all, do_not_mail, unknown, cancelled_pending].hash
     end
 
     # Builds the object from hash

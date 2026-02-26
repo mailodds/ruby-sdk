@@ -71,9 +71,9 @@ Finally add this to the Gemfile:
 
 ### Install from Git
 
-If the Ruby gem is hosted at a git repository: https://github.com/mailodds/ruby-sdk, then add the following in the Gemfile:
+If the Ruby gem is hosted at a git repository: https://github.com/GIT_USER_ID/GIT_REPO_ID, then add the following in the Gemfile:
 
-    gem 'mailodds', :git => 'https://github.com/mailodds/ruby-sdk.git'
+    gem 'mailodds', :git => 'https://github.com/GIT_USER_ID/GIT_REPO_ID.git'
 
 ### Include the Ruby code directly
 
@@ -127,8 +127,25 @@ Class | Method | HTTP request | Description
 *Mailodds::BulkValidationApi* | [**get_job_results**](docs/BulkValidationApi.md#get_job_results) | **GET** /v1/jobs/{job_id}/results | Get job results
 *Mailodds::BulkValidationApi* | [**get_presigned_upload**](docs/BulkValidationApi.md#get_presigned_upload) | **POST** /v1/jobs/upload/presigned | Get S3 presigned upload URL
 *Mailodds::BulkValidationApi* | [**list_jobs**](docs/BulkValidationApi.md#list_jobs) | **GET** /v1/jobs | List validation jobs
+*Mailodds::EmailSendingApi* | [**deliver_batch**](docs/EmailSendingApi.md#deliver_batch) | **POST** /v1/deliver/batch | Send to multiple recipients (max 100)
+*Mailodds::EmailSendingApi* | [**deliver_email**](docs/EmailSendingApi.md#deliver_email) | **POST** /v1/deliver | Send a single email
 *Mailodds::EmailValidationApi* | [**validate_batch**](docs/EmailValidationApi.md#validate_batch) | **POST** /v1/validate/batch | Validate multiple emails (sync)
 *Mailodds::EmailValidationApi* | [**validate_email**](docs/EmailValidationApi.md#validate_email) | **POST** /v1/validate | Validate single email
+*Mailodds::SendingDomainsApi* | [**create_sending_domain**](docs/SendingDomainsApi.md#create_sending_domain) | **POST** /v1/sending-domains | Add a sending domain
+*Mailodds::SendingDomainsApi* | [**delete_sending_domain**](docs/SendingDomainsApi.md#delete_sending_domain) | **DELETE** /v1/sending-domains/{domain_id} | Delete a sending domain
+*Mailodds::SendingDomainsApi* | [**get_sending_domain**](docs/SendingDomainsApi.md#get_sending_domain) | **GET** /v1/sending-domains/{domain_id} | Get a sending domain
+*Mailodds::SendingDomainsApi* | [**get_sending_domain_identity_score**](docs/SendingDomainsApi.md#get_sending_domain_identity_score) | **GET** /v1/sending-domains/{domain_id}/identity-score | Get domain identity score
+*Mailodds::SendingDomainsApi* | [**get_sending_stats**](docs/SendingDomainsApi.md#get_sending_stats) | **GET** /v1/sending-stats | Get sending statistics
+*Mailodds::SendingDomainsApi* | [**list_sending_domains**](docs/SendingDomainsApi.md#list_sending_domains) | **GET** /v1/sending-domains | List sending domains
+*Mailodds::SendingDomainsApi* | [**verify_sending_domain**](docs/SendingDomainsApi.md#verify_sending_domain) | **POST** /v1/sending-domains/{domain_id}/verify | Verify domain DNS records
+*Mailodds::SubscriberListsApi* | [**confirm_subscription**](docs/SubscriberListsApi.md#confirm_subscription) | **GET** /v1/confirm/{token} | Confirm subscription
+*Mailodds::SubscriberListsApi* | [**create_list**](docs/SubscriberListsApi.md#create_list) | **POST** /v1/lists | Create a subscriber list
+*Mailodds::SubscriberListsApi* | [**delete_list**](docs/SubscriberListsApi.md#delete_list) | **DELETE** /v1/lists/{list_id} | Delete a subscriber list
+*Mailodds::SubscriberListsApi* | [**get_list**](docs/SubscriberListsApi.md#get_list) | **GET** /v1/lists/{list_id} | Get a subscriber list
+*Mailodds::SubscriberListsApi* | [**get_lists**](docs/SubscriberListsApi.md#get_lists) | **GET** /v1/lists | List subscriber lists
+*Mailodds::SubscriberListsApi* | [**get_subscribers**](docs/SubscriberListsApi.md#get_subscribers) | **GET** /v1/lists/{list_id}/subscribers | List subscribers
+*Mailodds::SubscriberListsApi* | [**subscribe**](docs/SubscriberListsApi.md#subscribe) | **POST** /v1/subscribe/{list_id} | Subscribe to a list
+*Mailodds::SubscriberListsApi* | [**unsubscribe_subscriber**](docs/SubscriberListsApi.md#unsubscribe_subscriber) | **DELETE** /v1/lists/{list_id}/subscribers/{subscriber_id} | Unsubscribe a subscriber
 *Mailodds::SuppressionListsApi* | [**add_suppression**](docs/SuppressionListsApi.md#add_suppression) | **POST** /v1/suppression | Add suppression entries
 *Mailodds::SuppressionListsApi* | [**check_suppression**](docs/SuppressionListsApi.md#check_suppression) | **POST** /v1/suppression/check | Check suppression status
 *Mailodds::SuppressionListsApi* | [**get_suppression_stats**](docs/SuppressionListsApi.md#get_suppression_stats) | **GET** /v1/suppression/stats | Get suppression statistics
@@ -154,21 +171,43 @@ Class | Method | HTTP request | Description
  - [Mailodds::AddSuppressionRequest](docs/AddSuppressionRequest.md)
  - [Mailodds::AddSuppressionRequestEntriesInner](docs/AddSuppressionRequestEntriesInner.md)
  - [Mailodds::AddSuppressionResponse](docs/AddSuppressionResponse.md)
+ - [Mailodds::BatchDeliverRequest](docs/BatchDeliverRequest.md)
+ - [Mailodds::BatchDeliverRequestStructuredData](docs/BatchDeliverRequestStructuredData.md)
+ - [Mailodds::BatchDeliverResponse](docs/BatchDeliverResponse.md)
+ - [Mailodds::BatchDeliverResponseDelivery](docs/BatchDeliverResponseDelivery.md)
+ - [Mailodds::BatchDeliverResponseRejectedInner](docs/BatchDeliverResponseRejectedInner.md)
  - [Mailodds::CheckSuppressionRequest](docs/CheckSuppressionRequest.md)
+ - [Mailodds::ConfirmSubscription200Response](docs/ConfirmSubscription200Response.md)
  - [Mailodds::CreateJobFromS3Request](docs/CreateJobFromS3Request.md)
  - [Mailodds::CreateJobRequest](docs/CreateJobRequest.md)
+ - [Mailodds::CreateList201Response](docs/CreateList201Response.md)
+ - [Mailodds::CreateListRequest](docs/CreateListRequest.md)
  - [Mailodds::CreatePolicyFromPresetRequest](docs/CreatePolicyFromPresetRequest.md)
  - [Mailodds::CreatePolicyRequest](docs/CreatePolicyRequest.md)
+ - [Mailodds::CreateSendingDomain201Response](docs/CreateSendingDomain201Response.md)
+ - [Mailodds::CreateSendingDomainRequest](docs/CreateSendingDomainRequest.md)
  - [Mailodds::DeleteJob200Response](docs/DeleteJob200Response.md)
  - [Mailodds::DeletePolicy200Response](docs/DeletePolicy200Response.md)
  - [Mailodds::DeletePolicyRule200Response](docs/DeletePolicyRule200Response.md)
+ - [Mailodds::DeliverRequest](docs/DeliverRequest.md)
+ - [Mailodds::DeliverRequestOptions](docs/DeliverRequestOptions.md)
+ - [Mailodds::DeliverRequestStructuredData](docs/DeliverRequestStructuredData.md)
+ - [Mailodds::DeliverRequestToInner](docs/DeliverRequestToInner.md)
+ - [Mailodds::DeliverResponse](docs/DeliverResponse.md)
+ - [Mailodds::DeliverResponseDelivery](docs/DeliverResponseDelivery.md)
  - [Mailodds::ErrorResponse](docs/ErrorResponse.md)
+ - [Mailodds::GetLists200Response](docs/GetLists200Response.md)
  - [Mailodds::GetPresignedUploadRequest](docs/GetPresignedUploadRequest.md)
+ - [Mailodds::GetSendingDomainIdentityScore200Response](docs/GetSendingDomainIdentityScore200Response.md)
+ - [Mailodds::GetSendingStats200Response](docs/GetSendingStats200Response.md)
+ - [Mailodds::GetSendingStats200ResponseStats](docs/GetSendingStats200ResponseStats.md)
+ - [Mailodds::GetSubscribers200Response](docs/GetSubscribers200Response.md)
  - [Mailodds::HealthCheck200Response](docs/HealthCheck200Response.md)
  - [Mailodds::Job](docs/Job.md)
  - [Mailodds::JobListResponse](docs/JobListResponse.md)
  - [Mailodds::JobResponse](docs/JobResponse.md)
  - [Mailodds::JobSummary](docs/JobSummary.md)
+ - [Mailodds::ListSendingDomains200Response](docs/ListSendingDomains200Response.md)
  - [Mailodds::Pagination](docs/Pagination.md)
  - [Mailodds::Policy](docs/Policy.md)
  - [Mailodds::PolicyListResponse](docs/PolicyListResponse.md)
@@ -184,6 +223,16 @@ Class | Method | HTTP request | Description
  - [Mailodds::RemoveSuppression200Response](docs/RemoveSuppression200Response.md)
  - [Mailodds::RemoveSuppressionRequest](docs/RemoveSuppressionRequest.md)
  - [Mailodds::ResultsResponse](docs/ResultsResponse.md)
+ - [Mailodds::SendingDomain](docs/SendingDomain.md)
+ - [Mailodds::SendingDomainDnsRecords](docs/SendingDomainDnsRecords.md)
+ - [Mailodds::SendingDomainDnsRecordsNs](docs/SendingDomainDnsRecordsNs.md)
+ - [Mailodds::SendingDomainIdentityScore](docs/SendingDomainIdentityScore.md)
+ - [Mailodds::SendingDomainIdentityScoreChecks](docs/SendingDomainIdentityScoreChecks.md)
+ - [Mailodds::SendingDomainIdentityScoreChecksDkim](docs/SendingDomainIdentityScoreChecksDkim.md)
+ - [Mailodds::SendingDomainIdentityScoreChecksDmarc](docs/SendingDomainIdentityScoreChecksDmarc.md)
+ - [Mailodds::SubscribeRequest](docs/SubscribeRequest.md)
+ - [Mailodds::Subscriber](docs/Subscriber.md)
+ - [Mailodds::SubscriberList](docs/SubscriberList.md)
  - [Mailodds::SuppressionCheckResponse](docs/SuppressionCheckResponse.md)
  - [Mailodds::SuppressionEntry](docs/SuppressionEntry.md)
  - [Mailodds::SuppressionListResponse](docs/SuppressionListResponse.md)
@@ -196,6 +245,7 @@ Class | Method | HTTP request | Description
  - [Mailodds::TelemetrySummaryTotals](docs/TelemetrySummaryTotals.md)
  - [Mailodds::TestPolicyRequest](docs/TestPolicyRequest.md)
  - [Mailodds::TestPolicyRequestTestResult](docs/TestPolicyRequestTestResult.md)
+ - [Mailodds::UnsubscribeSubscriber200Response](docs/UnsubscribeSubscriber200Response.md)
  - [Mailodds::UpdatePolicyRequest](docs/UpdatePolicyRequest.md)
  - [Mailodds::ValidateBatch200Response](docs/ValidateBatch200Response.md)
  - [Mailodds::ValidateBatch200ResponseSummary](docs/ValidateBatch200ResponseSummary.md)

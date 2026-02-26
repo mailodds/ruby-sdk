@@ -26,3 +26,5 @@
 ci/**
 # Preserve GitHub Actions workflows
 .github/**
+# Preserve gemspec fix (exclude .gem from files list)
+mailodds.gemspec

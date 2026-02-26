@@ -17,12 +17,16 @@ module Mailodds
   class PresignedUploadResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     attr_accessor :upload
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'upload' => :'upload'
       }
     end
@@ -41,6 +45,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'upload' => :'PresignedUploadResponseUpload'
       }
     end
@@ -71,6 +76,10 @@ module Mailodds
         self.schema_version = attributes[:'schema_version']
       end
 
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
+      end
+
       if attributes.key?(:'upload')
         self.upload = attributes[:'upload']
       end
@@ -97,6 +106,7 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           upload == o.upload
     end
 
@@ -109,7 +119,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, upload].hash
+      [schema_version, request_id, upload].hash
     end
 
     # Builds the object from hash

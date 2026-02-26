@@ -17,16 +17,30 @@ module Mailodds
   class AddSuppressionResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
+    # Number of entries successfully added
     attr_accessor :added
 
-    attr_accessor :skipped
+    # Number of duplicate entries skipped
+    attr_accessor :duplicates
+
+    # Number of invalid entries rejected
+    attr_accessor :invalid
+
+    # Total entries in the request
+    attr_accessor :total
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'added' => :'added',
-        :'skipped' => :'skipped'
+        :'duplicates' => :'duplicates',
+        :'invalid' => :'invalid',
+        :'total' => :'total'
       }
     end
 
@@ -44,8 +58,11 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'added' => :'Integer',
-        :'skipped' => :'Integer'
+        :'duplicates' => :'Integer',
+        :'invalid' => :'Integer',
+        :'total' => :'Integer'
       }
     end
 
@@ -75,12 +92,24 @@ module Mailodds
         self.schema_version = attributes[:'schema_version']
       end
 
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
+      end
+
       if attributes.key?(:'added')
         self.added = attributes[:'added']
       end
 
-      if attributes.key?(:'skipped')
-        self.skipped = attributes[:'skipped']
+      if attributes.key?(:'duplicates')
+        self.duplicates = attributes[:'duplicates']
+      end
+
+      if attributes.key?(:'invalid')
+        self.invalid = attributes[:'invalid']
+      end
+
+      if attributes.key?(:'total')
+        self.total = attributes[:'total']
       end
     end
 
@@ -105,8 +134,11 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           added == o.added &&
-          skipped == o.skipped
+          duplicates == o.duplicates &&
+          invalid == o.invalid &&
+          total == o.total
     end
 
     # @see the `==` method
@@ -118,7 +150,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, added, skipped].hash
+      [schema_version, request_id, added, duplicates, invalid, total].hash
     end
 
     # Builds the object from hash

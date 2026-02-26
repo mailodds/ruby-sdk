@@ -17,6 +17,9 @@ module Mailodds
   class PolicyListResponse < ApiModelBase
     attr_accessor :schema_version
 
+    # Unique request identifier
+    attr_accessor :request_id
+
     attr_accessor :policies
 
     attr_accessor :limits
@@ -25,6 +28,7 @@ module Mailodds
     def self.attribute_map
       {
         :'schema_version' => :'schema_version',
+        :'request_id' => :'request_id',
         :'policies' => :'policies',
         :'limits' => :'limits'
       }
@@ -44,6 +48,7 @@ module Mailodds
     def self.openapi_types
       {
         :'schema_version' => :'String',
+        :'request_id' => :'String',
         :'policies' => :'Array<Policy>',
         :'limits' => :'PolicyListResponseLimits'
       }
@@ -73,6 +78,10 @@ module Mailodds
 
       if attributes.key?(:'schema_version')
         self.schema_version = attributes[:'schema_version']
+      end
+
+      if attributes.key?(:'request_id')
+        self.request_id = attributes[:'request_id']
       end
 
       if attributes.key?(:'policies')
@@ -107,6 +116,7 @@ module Mailodds
       return true if self.equal?(o)
       self.class == o.class &&
           schema_version == o.schema_version &&
+          request_id == o.request_id &&
           policies == o.policies &&
           limits == o.limits
     end
@@ -120,7 +130,7 @@ module Mailodds
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [schema_version, policies, limits].hash
+      [schema_version, request_id, policies, limits].hash
     end
 
     # Builds the object from hash
